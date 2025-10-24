@@ -127,7 +127,7 @@
     </div>
 
     <footer>
-      <p>Uppercase letters are prefixed with <em>Capitol</em> (e.g., <span class="kbd">P</span> → <span class="kbd">Capitol PAPA</span>). Digits & punctuation are named in lowercase. Split on whitespace when “one line per token” is enabled.</p>
+      <p>Uppercase letters are prefixed with <em>Capital</em> (e.g., <span class="kbd">P</span> → <span class="kbd">Capital PAPA</span>). Digits & punctuation are named in lowercase. Split on whitespace when “one line per token” is enabled.</p>
     </footer>
   </div>
 
@@ -170,7 +170,7 @@
       for (const ch of str) {
         if (/[a-z]/i.test(ch)) {
           const word = NATO[ch.toLowerCase()] || ch;
-          out.push(ch === ch.toUpperCase() && ch !== ch.toLowerCase() ? `Capitol ${word}` : word);
+          out.push(ch === ch.toUpperCase() && ch !== ch.toLowerCase() ? `Capital ${word}` : word);
         } else if (/\d/.test(ch)) {
           out.push(DIGITS[ch]);
         } else if (Object.prototype.hasOwnProperty.call(PUNCT, ch)) {
