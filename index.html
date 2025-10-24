@@ -1,1 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NATO-Lizer — Local-Only NATO Speller</title>
+  <meta name="description" content="Convert text to NATO phonetics, runs entirely in your browser for maximum privacy." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self' 'unsafe-inline';" />
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --panel: #111827;     /* gray-900 */
+      --muted: #94a3b8;     /* slate-400 */
+      --fg: #e5e7eb;        /* gray-200 */
+      --accent: #34d399;    /* green-400 */
+      --accent-2: #60a5fa;  /* blue-400 */
+      --danger: #f87171;    /* red-400 */
+      --border: #1f2937;    /* gray-800 */
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1000px 600px at 10% 10%, #0b1224 0, var(--bg) 40%);
+      color: var(--fg);
+    }
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 16px; }
+    header { display:flex; align-items:center; gap:12px; margin-bottom: 18px; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px; display:grid; place-items:center; background: linear-gradient(145deg, var(--accent), var(--accent-2));
+      color:#051016; font-weight: 900; text-shadow: 0 1px 0 rgba(255,255,255,.2);
+      box-shadow: var(--shadow);
+    }
+    h1 { font-size: clamp(22px, 2vw + 10px, 34px); margin:0; letter-spacing: .4px; }
+    .muted { color: var(--muted); font-size: 14px; }
 
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+      border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+
+    /* Over/Under layout: single column */
+    .column { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+    .section { padding: 16px; }
+    .section h2 { margin: 0 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing:.12em; }
+
+    textarea, .output {
+      width: 100%;
+      min-height: 220px;
+      resize: none; /* we auto-resize for height */
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      color: var(--fg);
+      padding: 14px 14px 18px;
+      line-height: 1.5;
+      font-size: 16px;
+      outline: none;
+    }
+    textarea:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(96,165,250,.25); }
+    .output { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    .toolbar { display:flex; flex-wrap: wrap; gap: 8px; align-items:center; margin-top: 10px; }
+    .btn {
+      appearance: none; border: 1px solid var(--border); background: #0b1324; color: var(--fg);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: .15s transform ease, .15s background ease;
+    }
+    .btn:hover { transform: translateY(-1px); background: #0f1a31; }
+    .btn.primary { border-color: transparent; background: linear-gradient(145deg, var(--accent), var(--accent-2)); color: #061017; }
+    .btn.danger { border-color: var(--danger); color: var(--danger); }
+    .check { display:flex; align-items:center; gap: 8px; font-size: 14px; color: var(--muted); }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0a1222; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); }
+
+    footer { margin-top: 14px; color: var(--muted); font-size: 12px; }
+    .tiny { font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>NATO-Lizer</h1>
+        <div class="muted">NATO speller. Runs totally in-browser. No servers. No trackers.</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="column">
+        <!-- Upper field: INPUT -->
+        <section class="section">
+          <h2>Input</h2>
+          <label for="input" class="tiny">Type or paste text below. Processing is instant and local.</label>
+          <textarea id="input" placeholder="Try: 1PuRoo*\n\nOr paste anything…"></textarea>
+          <div class="toolbar">
+            <button class="btn" id="sample">Insert sample</button>
+            <button class="btn danger" id="clear">Clear</button>
+          </div>
+        </section>
+
+        <!-- Lower field: OUTPUT (auto-resizing, full width) -->
+        <section class="section">
+          <h2>Output</h2>
+          <label for="output" class="tiny">Letters are lowercase unless otherwise specified.</label>
+          <textarea id="output" class="output" aria-live="polite" readonly placeholder="Converted text will appear here…"></textarea>
+          <div class="toolbar">
+            <button class="btn primary" id="copy">Copy</button>
+            <label class="check"><input type="checkbox" id="perToken" checked /> one line per token</label>
+            <label class="check"><input type="checkbox" id="showUnknown" checked /> keep unknown characters</label>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <p>Uppercase letters are prefixed with <em>Capitol</em> (e.g., <span class="kbd">P</span> → <span class="kbd">Capitol PAPA</span>). Digits & punctuation are named in lowercase. Split on whitespace when “one line per token” is enabled.</p>
+    </footer>
+  </div>
+
+  <script>
+  (function(){
+    // Data dictionaries
+    const NATO = {
+      a:"ALFA",b:"BRAVO",c:"CHARLIE",d:"DELTA",e:"ECHO",f:"FOXTROT",g:"GOLF",h:"HOTEL",i:"INDIA",j:"JULIETT",k:"KILO",l:"LIMA",m:"MIKE",n:"NOVEMBER",o:"OSCAR",p:"PAPA",q:"QUEBEC",r:"ROMEO",s:"SIERRA",t:"TANGO",u:"UNIFORM",v:"VICTOR",w:"WHISKEY",x:"X-RAY",y:"YANKEE",z:"ZULU"
+    };
+    const DIGITS = { 0:"zero",1:"one",2:"two",3:"three",4:"four",5:"five",6:"six",7:"seven",8:"eight",9:"nine" };
+    const PUNCT = {
+      "*":"asterisk","-":"dash","_":"underscore",".":"period",",":"comma",
+      "!":"exclamation","?":"question","#":"hash","@":"at_sign","$":"dollar","%":"percent","^":"caret","&":"ampersand",
+      "(":"left parenthesis",")":"right parenthesis","+":"plus","=":"equals","/":"slash","\\":"backslash",":":"colon",";":"semicolon","'":"apostrophe","\"":"quote",
+      "[":"left bracket","]":"right bracket","{":"left brace","}":"right brace","<":"less than",">":"greater than","~":"tilde","`":"backtick"," ":"space"
+    };
+
+    const $ = sel => document.querySelector(sel);
+    const input = $('#input');
+    const output = $('#output');
+    const perToken = $('#perToken');
+    const copyBtn = $('#copy');
+    theSample = $('#sample');
+    const clearBtn = $('#clear');
+    const showUnknown = $('#showUnknown');
+
+    function spellToken(str){
+      const out = [];
+      for (const ch of str) {
+        if (/[a-z]/i.test(ch)) {
+          const word = NATO[ch.toLowerCase()] || ch;
+          out.push(ch === ch.toUpperCase() && ch !== ch.toLowerCase() ? `Capitol ${word}` : word);
+        } else if (/\d/.test(ch)) {
+          out.push(DIGITS[ch]);
+        } else if (Object.prototype.hasOwnProperty.call(PUNCT, ch)) {
+          out.push(PUNCT[ch]);
+        } else {
+          if (showUnknown.checked) out.push(ch);
+        }
+      }
+      return out.join(', ');
+    }
+
+    // Auto-resize the output textarea height to fit content; width is 100% for max readability.
+    function autoResize(el){
+      el.style.height = 'auto';
+      el.style.height = (el.scrollHeight + 2) + 'px';
+    }
+
+    function render(){
+      const text = input.value;
+      if (!text.trim()) { output.value = ''; autoResize(output); return; }
+      output.value = perToken.checked
+        ? text.split(/\\s+/).filter(Boolean).map(spellToken).join('\\n')
+        : spellToken(text);
+      autoResize(output);
+    }
+
+    // live updating
+    input.addEventListener('input', render);
+    perToken.addEventListener('change', render);
+    showUnknown.addEventListener('change', render);
+
+    // copy
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=> copyBtn.textContent = 'Copy', 900);
+      } catch(e){
+        // fallback
+        output.focus();
+        output.select();
+        document.execCommand('copy');
+      }
+    });
+
+    // sample + clear
+    theSample.addEventListener('click', () => { input.value = 'I@mL!k1ngRubb3rDucki3s'; render(); });
+    clearBtn.addEventListener('click', () => { input.value = ''; render(); input.focus(); });
+
+    // initial example
+    input.value = 'I@mL!k1ngRubb3rDucki3s';
+    render();
+
+    // keep height fresh on viewport changes
+    window.addEventListener('resize', () => autoResize(output));
+    output.setAttribute('role', 'status');
+  })();
+  </script>
+</body>
+</html>
