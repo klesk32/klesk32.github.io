@@ -6,6 +6,7 @@
   <title>NATO-Lizer — Local-Only NATO Speller</title>
   <meta name="description" content="Convert text to NATO phonetics, runs entirely in your browser for maximum privacy." />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self' 'unsafe-inline';" />
+  <link rel="stylesheet" href="./assets/style.css" />
   <style>
     :root {
       /* Palette (from provided colorway) */
@@ -89,7 +90,21 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Added: skip link + site nav header -->
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">Place for things</h1>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Home</a>
+        <a href="./natolizer.html" aria-current="page">String to NATO converter</a>
+      </nav>
+    </div>
+  </header>
+  <!-- End added -->
+
+  <div id="main" class="container">
     <header>
       <div>
         <h1>NATO-Lizer</h1>
