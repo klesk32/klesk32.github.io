@@ -90,19 +90,14 @@
   </style>
 </head>
 <body>
-  <!-- Added: skip link + site nav header -->
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Header now title only (nav removed) -->
   <header class="site-header">
     <div class="container">
       <h1 class="site-title">Place for things</h1>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="./">Home</a>
-        <a href="./natolizer.html" aria-current="page">String to NATO converter</a>
-      </nav>
     </div>
   </header>
-  <!-- End added -->
 
   <div id="main" class="container">
     <header>
@@ -143,6 +138,17 @@
       <p>Uppercase letters are prefixed with <em>Capitol</em> (e.g., <span class="kbd">P</span> → <span class="kbd">Capitol PAPA</span>). Digits & punctuation are named in lowercase. Split on whitespace when “one line per token” is enabled.</p>
     </footer>
   </div>
+
+  <!-- Added: site nav at the bottom -->
+  <footer class="site-footer">
+    <div class="container">
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Home</a>
+        <a href="./natolizer.html" aria-current="page">String to NATO converter</a>
+      </nav>
+    </div>
+  </footer>
+  <!-- End added -->
 
   <script>
   (function(){
@@ -223,7 +229,7 @@
     clearBtn.addEventListener('click', () => { input.value = ''; render(); input.focus(); });
 
     // initial example
-    input.value = '';
+    input.value = 'I@mL!k1ngRubb3rDucki3s';
     render();
 
     // keep height fresh on viewport changes
