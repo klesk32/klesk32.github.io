@@ -1,19 +1,36 @@
 <!doctype html>
 <html lang="en">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Home</title>
-<link rel="stylesheet" href="./assets/style.css" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home · My Site</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
 <body>
-  <header>
-    <h1>My Site</h1>
-    <nav>
-      <a href="./">Home</a>
-      <a href="./natolizer.html">string to NATO converter</a>
-    </nav>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">My Site</h1>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./" aria-current="page">Home</a>
+        <a href="./natolizer.html">string to NATO converter</a>
+      </nav>
+    </div>
   </header>
-  <main>
-    <p>This is an index, yeah...</p>
+
+  <main id="main" class="container">
+    <p class="lead">This is an index, yeah…</p>
+    <ul class="list">
+      <li><a href="./natolizer.html">Open the NATO converter</a></li>
+      <!-- Add more links as you add pages -->
+    </ul>
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© My Site</small>
+    </div>
+  </footer>
 </body>
 </html>
