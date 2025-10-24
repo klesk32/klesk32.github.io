@@ -1,22 +1,22 @@
 /* assets/style.css */
 /* ---- Base colorway (same palette as NATO-Lizer) ---- */
 :root{
-  --bg: #1b1918;
-  --fg: #a8a19f;
-  --muted: #766e6b;
-  --hi: #f1efee;
+  --bg: #333333;
+  --fg: #cccccc;
+  --muted: #999999;
+  --hi: #ffffff;
 
-  --red: #f22c40;
-  --green: #5ab738;
-  --orange: #d5911a;
-  --blue: #407ee7;
-  --purple: #6666ea;
-  --teal: #00ad9c;
+  --red: #cc6699;
+  --green: #99cc66;
+  --orange: #cc9966;
+  --blue: #6699cc;
+  --purple: #9966cc;
+  --teal: #66cc99;
 
-  --panel: #1b1918;
-  --border: #3a3533;
+  --panel: #333333;
+  --border: #666666;
   --link: var(--blue);
-  --link-hover: #6a9bf0;
+  --link-hover: #99ccff;
   --radius: 10px;
 }
 
@@ -59,7 +59,7 @@ a:focus-visible{
   left: -9999px;
   top: 0;
   background: var(--hi);
-  color: #1b1918;
+  color: var(--bg);
   padding: 8px 12px;
   border-radius: 6px;
 }
